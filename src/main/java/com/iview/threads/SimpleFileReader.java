@@ -12,6 +12,7 @@ public class SimpleFileReader implements IFileReader, Runnable {
     private final CountDownLatch startLatch;
     private final CountDownLatch finishLatch;
 
+    @SuppressWarnings("unused")
     public String getFile() {
         return file;
     }
@@ -21,8 +22,8 @@ public class SimpleFileReader implements IFileReader, Runnable {
         this.file = file;
     }
 
-    public SimpleFileReader(CountDownLatch stopLatch, CountDownLatch finishLatch) {
-        this.startLatch = stopLatch;
+    public SimpleFileReader(CountDownLatch startLatch, CountDownLatch finishLatch) {
+        this.startLatch = startLatch;
         this.finishLatch = finishLatch;
     }
 
@@ -30,14 +31,13 @@ public class SimpleFileReader implements IFileReader, Runnable {
     public void readFile() {
 
         try {
-            startLatch.countDown();
             startLatch.await();
             Properties prop = new Properties();
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(file);
 
             if (inputStream != null) {
                 prop.load(inputStream);
-                //System.out.println("In readFile, thread id: " + Thread.currentThread().getId());
+                System.out.println("In readFile, thread id: " + Thread.currentThread().getId());
             } else {
                 System.out.println("file not found");
             }
